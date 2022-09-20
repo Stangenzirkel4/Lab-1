@@ -8,6 +8,7 @@ countall = 0    #Счетчик всех записей с названием > 
 choice = [] #Список для записи выборки по запросу пользователя
 tags_set = set()    #Множество тегов
 publishers_set = set()  #Множество издателей (для books-en)
+bestbooks = [{"Кол-во выдач":-1}]*20
 
 print("Введите искомого автора")
 author = input()    #Имя искомого автора
@@ -49,6 +50,13 @@ with open('books.csv') as f:
         for i in currenttags:
             tags_set.add(i)
 
+        #Ищем 20 самых популярных книг
+        for i in range(len(bestbooks)):
+            if int(row.get("Кол-во выдач")) > int(bestbooks[i].get(("Кол-во выдач"))):
+                bestbooks.insert(i,row)
+                bestbooks.pop()
+                break
+
 
 with open('books-en.csv') as f:
     reader = csv.DictReader(f, delimiter=';')
@@ -81,3 +89,13 @@ file = open("List of publishers.txt", "w")
 for i in sorted(publishers_set):
     file.write(i+"\n")
 file.close()
+
+#Сохраняем 20 самых популярных книг
+with open('Bestsellers.csv', 'w', newline='') as csvfile:
+    fieldnames = ['ID','Название','Тип','Автор','Автор (ФИО)','Возрастное ограничение на книгу','Дата поступления','Цена поступления','Кол-во выдач','Дата списания книги','Инвентарный номер','Выдана до','Жанр книги']
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    writer.writeheader()
+    for i in bestbooks:
+        writer.writerow(i)
+
+
