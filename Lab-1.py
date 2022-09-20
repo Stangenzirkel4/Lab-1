@@ -2,11 +2,12 @@
 import csv
 import random
 
-
 #Объявляем переменные
 count30 = 0     #Счетчик всех записей
 countall = 0    #Счетчик всех записей с названием > 30 символов
 choice = [] #Список для записи выборки по запросу пользователя
+tags_set = set()    #Множество тегов
+publishers_set = set()  #Множество издателей (для books-en)
 
 print("Введите искомого автора")
 author = input()    #Имя искомого автора
@@ -43,7 +44,20 @@ with open('books.csv') as f:
                 if int(row.get("ID")) % 100 == random.randint(0, 99):
                     choice.append(row.get("Автор") + '. "' + row.get("Название") + '" - ' + row.get("Дата поступления")[:4])
 
+        #Пополняем множество тегов
+        currenttags = row.get("Жанр книги").split("# ")
+        for i in currenttags:
+            tags_set.add(i)
 
+
+with open('books-en.csv') as f:
+    reader = csv.DictReader(f, delimiter=';')
+    for row in reader:
+        publishers_set.add(row.get("Publisher"))
+
+
+
+#Выводим значения счетчиков
 print("Всего записей:", countall)
 print("Всего записей, у которых в поле 'Название' строка длиннее 30 символов:", count30)
 
@@ -54,4 +68,16 @@ n = 0 #Номер строки в записываемом файле
 for i in choice:
     n += 1
     file.write(str(n)+". "+str(i)+"\n")
+file.close()
+
+#Сохраняем множество тегов
+file = open("List of tags.txt", "w")
+for i in sorted(tags_set):
+    file.write(i+"\n")
+file.close()
+
+#Сохраняем множество издателей
+file = open("List of publishers.txt", "w")
+for i in sorted(publishers_set):
+    file.write(i+"\n")
 file.close()
