@@ -32,17 +32,17 @@ with open('books.csv') as f:
 
         #Выполняем поиск по автору
         if author == row.get("Автор"):
-            if int(row.get("Дата поступления")[:4]) >= 2018:
+            if int(row.get("Дата поступления")[6:10]) >= 2018:
                 print(row)
 
         #Пополняем выборку по запросу пользователя
         if len(choice) < 20:
             if wantedKey != "-":
                 if row.get(wantedKey) == wantedValue:
-                    choice.append(row.get("Автор") + '. "' + row.get("Название") + '" - ' + row.get("Дата поступления")[:4])
+                    choice.append(row.get("Автор") + '. "' + row.get("Название") + '" - ' + row.get("Дата поступления")[6:10])
             else:
                 if int(row.get("ID")) % 100 == random.randint(0, 99):
-                    choice.append(row.get("Автор") + '. "' + row.get("Название") + '" - ' + row.get("Дата поступления")[:4])
+                    choice.append(row.get("Автор") + '. "' + row.get("Название") + '" - ' + row.get("Дата поступления")[6:10])
 
         #Пополняем множество тегов
         currenttags = row.get("Жанр книги").split("# ")
